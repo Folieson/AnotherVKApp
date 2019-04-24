@@ -36,7 +36,7 @@
                                         </constraints>
                                     </view>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Another VK App" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="huO-rv-hxP">
-                                        <rect key="frame" x="56.5" y="30" width="207" height="36"/>
+                                        <rect key="frame" x="56.5" y="30" width="207.5" height="36"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -92,7 +92,7 @@
                                     <constraint firstItem="3Fi-uX-xXM" firstAttribute="centerX" secondItem="52p-gz-Slu" secondAttribute="centerX" id="Ibi-ZL-ADL"/>
                                     <constraint firstItem="x5y-hr-1XB" firstAttribute="top" secondItem="WdE-Hs-d4l" secondAttribute="bottom" constant="20" id="Jiu-iJ-B6k"/>
                                     <constraint firstItem="huO-rv-hxP" firstAttribute="centerX" secondItem="52p-gz-Slu" secondAttribute="centerX" id="RmD-8U-0ax"/>
-                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="huO-rv-hxP" secondAttribute="trailing" constant="15" id="X0r-xR-BvG"/>
+                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="huO-rv-hxP" secondAttribute="trailing" constant="10" id="X0r-xR-BvG"/>
                                     <constraint firstItem="XNS-2Q-566" firstAttribute="top" secondItem="huO-rv-hxP" secondAttribute="bottom" constant="30" id="XI4-DM-HNC"/>
                                     <constraint firstAttribute="bottom" secondItem="EeL-8n-Ae7" secondAttribute="bottom" id="cAF-7s-obD"/>
                                     <constraint firstItem="x5y-hr-1XB" firstAttribute="centerX" secondItem="52p-gz-Slu" secondAttribute="centerX" id="cLd-0L-yeg"/>
@@ -103,7 +103,7 @@
                                     <constraint firstItem="3Fi-uX-xXM" firstAttribute="top" secondItem="bFX-JA-9qm" secondAttribute="bottom" constant="30" id="kSk-yk-Wdf"/>
                                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="WdE-Hs-d4l" secondAttribute="trailing" constant="15" id="kcJ-eN-jaH"/>
                                     <constraint firstItem="XNS-2Q-566" firstAttribute="centerX" secondItem="52p-gz-Slu" secondAttribute="centerX" id="m7p-n2-rxU"/>
-                                    <constraint firstItem="huO-rv-hxP" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="EeL-8n-Ae7" secondAttribute="trailing" constant="15" id="mqn-50-lEJ"/>
+                                    <constraint firstItem="huO-rv-hxP" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="EeL-8n-Ae7" secondAttribute="trailing" constant="10" id="mqn-50-lEJ"/>
                                     <constraint firstItem="bFX-JA-9qm" firstAttribute="centerX" secondItem="52p-gz-Slu" secondAttribute="centerX" id="qla-Tb-GNJ"/>
                                     <constraint firstItem="WKQ-jk-fl1" firstAttribute="top" secondItem="52p-gz-Slu" secondAttribute="top" id="qxM-VT-V0e"/>
                                     <constraint firstItem="WdE-Hs-d4l" firstAttribute="top" secondItem="XNS-2Q-566" secondAttribute="bottom" constant="15" id="rO9-tj-7H2"/>
@@ -200,7 +200,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yNM-Q2-t05" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1973" y="1293"/>
+            <point key="canvasLocation" x="2128" y="1292"/>
         </scene>
         <!--News View Controller-->
         <scene sceneID="0Oj-fq-LJp">
