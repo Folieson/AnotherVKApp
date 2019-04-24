@@ -8,6 +8,14 @@
 
 import UIKit
 
+class Session {
+    static let instance = Session()
+    private init(){}
+    
+    var token = ""
+    var userId = 0
+}
+
 class LoginFormController: UIViewController {
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var loginInput: UITextField!
@@ -80,7 +88,9 @@ class LoginFormController: UIViewController {
         if !checkResult {
             showLoginError()
         }
-        
+        let session = Session.instance
+        session.token = "someToken"
+        session.userId = 12345
         return checkResult
     }
     
