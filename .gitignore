@@ -61,4 +61,3 @@ fastlane/test_output
 node_modules
 
 sourcetree-hook.json
-Podfile
