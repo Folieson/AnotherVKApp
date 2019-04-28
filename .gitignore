@@ -61,3 +61,4 @@ fastlane/test_output
 node_modules
 
 sourcetree-hook.json
+AnotherVKApp.xcodeproj/xcuserdata/andrejponamarcuk.xcuserdatad/xcschemes/xcschememanagement.plist
