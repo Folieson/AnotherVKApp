@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Alamofire
 
 class MyFriendsController: UITableViewController {
     @IBOutlet weak var searchBar: UISearchBar!
@@ -59,6 +60,17 @@ class MyFriendsController: UITableViewController {
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
+        let session = Session.instance
+        let vkServices = VKServices(token: session.token)
+        let method = "friends.get"
+        let parameters: Parameters = [
+                    "user_id":session.userId,
+                    "order":"name",
+                    "fields":"name",
+                    "access_token":session.token,
+                    "v":vkServices.version
+        ]
+        vkServices.printDataBy(method: method, parameters: parameters)
     }
 
     // MARK: - Table view data source

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Alamofire
 
 class AllGroupsController: UITableViewController {
     @IBOutlet weak var searchBar: UISearchBar!
@@ -22,6 +23,17 @@ class AllGroupsController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        let session = Session.instance
+        let vkServices = VKServices(token: session.token)
+        let method = "groups.search"
+        let parameters: Parameters = [
+            "q":"Music",
+            "type":"group",
+            "count":"10",
+            "access_token":session.token,
+            "v":vkServices.version
+        ]
+        vkServices.printDataBy(method: method, parameters: parameters)
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
