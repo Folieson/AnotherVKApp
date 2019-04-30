@@ -13,8 +13,6 @@ final class VKServices {
     private let token: String
     
     private let baseURL = "https://api.vk.com/method/"
-    //private var method = ""
-   // private var parameters: Parameters = [:]
     public let version = "5.95"
     
     
@@ -22,9 +20,8 @@ final class VKServices {
         self.token = token
     }
     
-    public func printDataBy(method: String, parameters: Parameters){
+    public func loadDataBy(method: String, parameters: Parameters){
         let url = baseURL+method
-        //var responseValue:Data
         Alamofire.request(url, parameters: parameters).validate().responseJSON(completionHandler: {response in
             switch response.result{
             case .success(let value):

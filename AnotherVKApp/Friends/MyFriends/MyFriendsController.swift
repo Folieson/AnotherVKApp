@@ -70,7 +70,7 @@ class MyFriendsController: UITableViewController {
                     "access_token":session.token,
                     "v":vkServices.version
         ]
-        vkServices.printDataBy(method: method, parameters: parameters)
+        vkServices.loadDataBy(method: method, parameters: parameters)
     }
 
     // MARK: - Table view data source
@@ -98,23 +98,6 @@ class MyFriendsController: UITableViewController {
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return String(tableData[section].firstChar)
     }
-    
-//    func filterFriendsByFirstChar() -> [Character:[String]] {
-//        var result:[Character:[String]] = [Character:[String]]()
-//
-//        for friend in self.myFriends {
-//            //friend.first
-//            if let firstChar = friend.first {
-//                if result.index(forKey: firstChar) != nil {
-//                    result[firstChar]!.append(friend)
-//                    //result[index].value.append(friend)
-//                } else {
-//                    result[firstChar] = [friend]
-//                }
-//            }
-//        }
-//        return result
-//    }
 
     /*
     // Override to support conditional editing of the table view.

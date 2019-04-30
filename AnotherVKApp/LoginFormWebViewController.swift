@@ -7,7 +7,6 @@
 //
 
 import UIKit
-//import Alamofire
 import WebKit
 
 class Session {
@@ -66,7 +65,6 @@ extension LoginFormWebViewController: WKNavigationDelegate {
                 return dict
         }
         
-        //let token = params["access_token"]
         
         let session = Session.instance
         if let token = params["access_token"] {
@@ -78,9 +76,4 @@ extension LoginFormWebViewController: WKNavigationDelegate {
         
         decisionHandler(.cancel)
     }
-    
-//    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
-//        let session = Session.instance
-//        return session.token != "" ? true : false
-//    }
 }

@@ -24,7 +24,7 @@ class MyFriendsPhotoController: UICollectionViewController {
             "access_token":session.token,
             "v":vkServices.version
         ]
-        vkServices.printDataBy(method: method, parameters: parameters)
+        vkServices.loadDataBy(method: method, parameters: parameters)
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
