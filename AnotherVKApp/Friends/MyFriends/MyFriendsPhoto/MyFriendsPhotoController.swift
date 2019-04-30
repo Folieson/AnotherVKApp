@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Alamofire
 
 //private let reuseIdentifier = "Cell"
 
@@ -15,6 +16,15 @@ class MyFriendsPhotoController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        let session = Session.instance
+        let vkServices = VKServices(token: session.token)
+        let method = "users.get"
+        let parameters: Parameters = [
+            "fields":"photo_50",
+            "access_token":session.token,
+            "v":vkServices.version
+        ]
+        vkServices.loadDataBy(method: method, parameters: parameters)
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		90B9D19E647DB8DC24EC77EB /* Pods_AnotherVKApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4ADF603DCDC290BC6AAC5069 /* Pods_AnotherVKApp.framework */; };
+		B91A95172277742D0084C970 /* VKServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91A95162277742D0084C970 /* VKServices.swift */; };
 		B9929700222C2E940028D30A /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99296FF222C2E940028D30A /* GradientView.swift */; };
 		B9929702222C30130028D30A /* AvatarImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9929701222C30130028D30A /* AvatarImageView.swift */; };
 		B9929704222C36AC0028D30A /* LikeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9929703222C36AC0028D30A /* LikeView.swift */; };
@@ -26,12 +27,15 @@
 		B9AE9EC72200C4DB0007C48E /* AllGroupsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AE9EC62200C4DB0007C48E /* AllGroupsCell.swift */; };
 		B9C836B3223FFC0C00BF3919 /* NewsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C836B2223FFC0C00BF3919 /* NewsViewController.swift */; };
 		B9C836B5223FFC2D00BF3919 /* NewsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C836B4223FFC2D00BF3919 /* NewsViewCell.swift */; };
+		B9EE613B22762229004C1801 /* LoginFormWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9EE613A22762229004C1801 /* LoginFormWebViewController.swift */; };
+		B9EE613D22762791004C1801 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9EE613C22762791004C1801 /* WebKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		460DCFD2324B39655D134BA2 /* Pods-AnotherVKApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AnotherVKApp.release.xcconfig"; path = "Target Support Files/Pods-AnotherVKApp/Pods-AnotherVKApp.release.xcconfig"; sourceTree = "<group>"; };
 		4ADF603DCDC290BC6AAC5069 /* Pods_AnotherVKApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AnotherVKApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		950606E3215FF241E22AE096 /* Pods-AnotherVKApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AnotherVKApp.debug.xcconfig"; path = "Target Support Files/Pods-AnotherVKApp/Pods-AnotherVKApp.debug.xcconfig"; sourceTree = "<group>"; };
+		B91A95162277742D0084C970 /* VKServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VKServices.swift; sourceTree = "<group>"; };
 		B99296FF222C2E940028D30A /* GradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
 		B9929701222C30130028D30A /* AvatarImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarImageView.swift; sourceTree = "<group>"; };
 		B9929703222C36AC0028D30A /* LikeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeView.swift; sourceTree = "<group>"; };
@@ -52,6 +56,8 @@
 		B9AE9EC62200C4DB0007C48E /* AllGroupsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllGroupsCell.swift; sourceTree = "<group>"; };
 		B9C836B2223FFC0C00BF3919 /* NewsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsViewController.swift; sourceTree = "<group>"; };
 		B9C836B4223FFC2D00BF3919 /* NewsViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsViewCell.swift; sourceTree = "<group>"; };
+		B9EE613A22762229004C1801 /* LoginFormWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginFormWebViewController.swift; sourceTree = "<group>"; };
+		B9EE613C22762791004C1801 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +65,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B9EE613D22762791004C1801 /* WebKit.framework in Frameworks */,
 				90B9D19E647DB8DC24EC77EB /* Pods_AnotherVKApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -69,6 +76,7 @@
 		36B1F985FF1E764DDC80B6FC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B9EE613C22762791004C1801 /* WebKit.framework */,
 				4ADF603DCDC290BC6AAC5069 /* Pods_AnotherVKApp.framework */,
 			);
 			name = Frameworks;
@@ -80,7 +88,6 @@
 				950606E3215FF241E22AE096 /* Pods-AnotherVKApp.debug.xcconfig */,
 				460DCFD2324B39655D134BA2 /* Pods-AnotherVKApp.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -125,6 +132,8 @@
 				B9AE9E9821FF7ECB0007C48E /* LaunchScreen.storyboard */,
 				B9AE9E9B21FF7ECB0007C48E /* Info.plist */,
 				B9AE9EA121FF7F230007C48E /* LoginFormController.swift */,
+				B9EE613A22762229004C1801 /* LoginFormWebViewController.swift */,
+				B91A95162277742D0084C970 /* VKServices.swift */,
 			);
 			path = AnotherVKApp;
 			sourceTree = "<group>";
@@ -220,6 +229,9 @@
 		B9AE9E8421FF7ECA0007C48E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				KnownAssetTags = (
+					New,
+				);
 				LastSwiftUpdateCheck = 1010;
 				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = "Андрей Понамарчук";
@@ -318,11 +330,13 @@
 				B9929700222C2E940028D30A /* GradientView.swift in Sources */,
 				B9929704222C36AC0028D30A /* LikeView.swift in Sources */,
 				B9AE9EB42200C3520007C48E /* MyFriendsController.swift in Sources */,
+				B91A95172277742D0084C970 /* VKServices.swift in Sources */,
 				B9AE9EC72200C4DB0007C48E /* AllGroupsCell.swift in Sources */,
 				B9AE9EC32200C4A80007C48E /* MyGroupsCell.swift in Sources */,
 				B9AE9EA221FF7F230007C48E /* LoginFormController.swift in Sources */,
 				B9AE9EBC2200C3FC0007C48E /* MyFriendsPhotoCell.swift in Sources */,
 				B9AE9EC52200C4C00007C48E /* AllGroupsController.swift in Sources */,
+				B9EE613B22762229004C1801 /* LoginFormWebViewController.swift in Sources */,
 				B9929702222C30130028D30A /* AvatarImageView.swift in Sources */,
 				B9C836B3223FFC0C00BF3919 /* NewsViewController.swift in Sources */,
 				B9C836B5223FFC2D00BF3919 /* NewsViewCell.swift in Sources */,

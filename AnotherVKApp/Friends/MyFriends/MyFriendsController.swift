@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Alamofire
 
 class MyFriendsController: UITableViewController {
     @IBOutlet weak var searchBar: UISearchBar!
@@ -59,6 +60,17 @@ class MyFriendsController: UITableViewController {
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
+        let session = Session.instance
+        let vkServices = VKServices(token: session.token)
+        let method = "friends.get"
+        let parameters: Parameters = [
+                    "user_id":session.userId,
+                    "order":"name",
+                    "fields":"name",
+                    "access_token":session.token,
+                    "v":vkServices.version
+        ]
+        vkServices.loadDataBy(method: method, parameters: parameters)
     }
 
     // MARK: - Table view data source
@@ -86,23 +98,6 @@ class MyFriendsController: UITableViewController {
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return String(tableData[section].firstChar)
     }
-    
-//    func filterFriendsByFirstChar() -> [Character:[String]] {
-//        var result:[Character:[String]] = [Character:[String]]()
-//
-//        for friend in self.myFriends {
-//            //friend.first
-//            if let firstChar = friend.first {
-//                if result.index(forKey: firstChar) != nil {
-//                    result[firstChar]!.append(friend)
-//                    //result[index].value.append(friend)
-//                } else {
-//                    result[firstChar] = [friend]
-//                }
-//            }
-//        }
-//        return result
-//    }
 
     /*
     // Override to support conditional editing of the table view.
