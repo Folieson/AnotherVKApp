@@ -11,44 +11,78 @@ import Alamofire
 
 class MyGroupsController: UITableViewController {
     @IBOutlet weak var searchBar: UISearchBar!
-    
-    //реализовать сортировку и поиск
-    var myGroups = [
-        "First Group",
-        "Second Group",
-        "Third Group"
-    ]
-    
 
+    var myGroups: [Group] = []
+
+    var myFilteredGroups: [Character:[Group]] {
+        get {
+            var result:[Character:[Group]] = [Character:[Group]]()
+    
+            for group in self.myGroups {
+                if let firstChar = group.name?.first {
+                    if result.index(forKey: firstChar) != nil {
+                        result[firstChar]!.append(group)
+                    } else {
+                        result[firstChar] = [group]
+                    }
+                }
+            }
+            return result
+        }
+    }
+    
+    struct GrouppedGroups {
+        var firstChar: Character
+        var groups: [Group]
+    }
+    
+    var grouppedGroupsArray = [GrouppedGroups]()
+    
+    var tableData = [GrouppedGroups]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
         let session = Session.instance
-        let vkServices = VKServices(token: session.token)
+        let vkServices = VKServices<Group>(token: session.token)
         let method = "groups.get"
         let parameters: Parameters = [
-            "extended":"1",
-            "access_token":session.token,
-            "v":vkServices.version
-        ]
-        vkServices.loadDataBy(method: method, parameters: parameters)
+                    "user_id":session.userId,
+                    "extended":"1",
+                    "fields":"name,photo",
+                    "access_token":session.token,
+                    "v":vkServices.version
+                ]
+        vkServices.loadDataBy(method: method, parameters: parameters, completition: { loadedData in
+            print("loadedData.count = \(loadedData.count)")
+            self.myGroups = loadedData
+            
+            for (key, value) in self.myFilteredGroups {
+                self.grouppedGroupsArray.append(GrouppedGroups(firstChar: key, groups: value.sorted(by: {$0.name! < $1.name!})))
+            }
+            self.grouppedGroupsArray = self.grouppedGroupsArray.sorted(by: {$0.firstChar < $1.firstChar})
+            self.tableData = self.grouppedGroupsArray
+            print("table data count = \(self.tableData.count)")
+            
+            self.loadView()
+        })
+        
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
-
+        
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
+        
     }
-
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
-        return 1
+        return tableData.count
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return myGroups.count
+        return tableData[section].groups.count
     }
 
     
@@ -56,29 +90,31 @@ class MyGroupsController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "MyGroupsCell", for: indexPath) as! MyGroupsCell
 
         // Configure the cell...
-        cell.name.text = myGroups[indexPath.row]
+        let group = tableData[indexPath.section].groups[indexPath.row]
+        cell.name.text = group.name
+        cell.icon.image = group.photoImage
 
         return cell
     }
     
     @IBAction func addGroup(segue: UIStoryboardSegue) {
         //Проверяем идентификатор? чтобы убедиться, что это нужный переход
-        if segue.identifier == "addGroup" {
-            //получаем ссылку на контроллер, с которого осуществляем переход
-            let allGroupsController = segue.source as! AllGroupsController
-            //получаем индекс выделенной ячейки
-            if let indexPath = allGroupsController.tableView.indexPathForSelectedRow {
-                //получаем город по индексу
-                let group = allGroupsController.allGroups[indexPath.row]
-                //Проверяем, что такого города нет в списке
-                if !myGroups.contains(group) {
-                    //добавляем город в список выбранных городов
-                    myGroups.append(group)
-                    //обновляем таблицу
-                    tableView.reloadData()
-                }
-            }
-        }
+//        if segue.identifier == "addGroup" {
+//            //получаем ссылку на контроллер, с которого осуществляем переход
+//            let allGroupsController = segue.source as! AllGroupsController
+//            //получаем индекс выделенной ячейки
+//            if let indexPath = allGroupsController.tableView.indexPathForSelectedRow {
+//                //получаем группу по индексу
+//                let group = allGroupsController.allGroups[indexPath.row]
+//                //Проверяем, что такой группы нет в списке
+//                if !myGroups.contains(group) {
+//                    //добавляем группу в список моих групп
+//                    myGroups.append(group)
+//                    //обновляем таблицу
+//                    tableView.reloadData()
+//                }
+//            }
+//        }
     }
 
     /*
@@ -91,15 +127,15 @@ class MyGroupsController: UITableViewController {
 
     
     // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            myGroups.remove(at: indexPath.row)
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
+//    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+//        if editingStyle == .delete {
+//            myGroups.remove(at: indexPath.row)
+//            // Delete the row from the data source
+//            tableView.deleteRows(at: [indexPath], with: .fade)
+//        } else if editingStyle == .insert {
+//            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+//        }    
+//    }
     
 
     /*
@@ -127,4 +163,30 @@ class MyGroupsController: UITableViewController {
     }
     */
 
+}
+
+extension MyGroupsController: UISearchBarDelegate {
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        self.searchBar.setShowsCancelButton(true, animated: true)
+        self.tableData = self.grouppedGroupsArray
+    }
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        self.searchBar.setShowsCancelButton(false, animated: true)
+        self.tableData = self.grouppedGroupsArray
+        self.tableView.reloadData()
+    }
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        self.searchBar.text?.removeAll()
+        self.searchBar.endEditing(true)
+    }
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        if var text = searchBar.text {
+            text = text.lowercased()
+            if !tableData.isEmpty {
+                tableData[0].groups.removeAll(where: {!$0.name!.lowercased().contains(text)})
+            }
+        }
+        self.tableView.reloadData()
+        
+    }
 }

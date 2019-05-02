@@ -9,22 +9,61 @@
 import UIKit
 import Alamofire
 
-//private let reuseIdentifier = "Cell"
-
 class MyFriendsPhotoController: UICollectionViewController {
-
+    var friendId = 0
+    var photos: [Photo] = []
+    var collectionData:[Int:(UIImage?,UIImage?)] = [Int:(UIImage?,UIImage?)]()
+    var collectionDataArray: [(UIImage?,UIImage?)] = [(UIImage?,UIImage?)]()
+    let middleSizePhotoTypes = ["m", "o", "p", "q"]
+    let largeSizePhotoTypes = ["x","y","z", "w", "r"]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         let session = Session.instance
-        let vkServices = VKServices(token: session.token)
-        let method = "users.get"
+        let vkServices = VKServices<Photo>(token: session.token)
+        let method = "photos.get"
         let parameters: Parameters = [
-            "fields":"photo_50",
+            "owner_id":friendId,
+            "album_id":"profile",
+            "photo_sizes":"1",
             "access_token":session.token,
             "v":vkServices.version
         ]
-        vkServices.loadDataBy(method: method, parameters: parameters)
+        vkServices.loadDataBy(method: method, parameters: parameters, completition: { loadedData in
+            print("loadedData.count = \(loadedData.count)")
+            self.photos = loadedData
+            initLoop: for photo in loadedData {
+                if let photoId = photo.id {
+                    self.collectionData[photoId] = (nil,nil)
+                    if let photoSizes = photo.sizes {
+                        sizesLoop: for photoSize in photoSizes {
+                            if let img = photoSize.img {
+                                if let photoType = photoSize.type {
+                                    if self.middleSizePhotoTypes.contains(photoType) {
+                                        self.collectionData[photoId]?.0 = img
+                                    } else if self.largeSizePhotoTypes.contains(photoType) {
+                                        self.collectionData[photoId]?.1 = img
+                                    }
+                                    if (self.collectionData[photoId]?.0 != nil) && (self.collectionData[photoId]?.1 != nil) {
+                                        continue initLoop
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                
+            }
+            
+            for (_,value) in self.collectionData{
+                self.collectionDataArray.append((value.0,value.1))
+            }
+            
+            self.loadView()
+        })
+
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
@@ -54,16 +93,27 @@ class MyFriendsPhotoController: UICollectionViewController {
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of items
-        return 1
+        return collectionDataArray.count
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MyFriendsPhotoCell", for: indexPath) as! MyFriendsPhotoCell
+        
+        cell.photo.image = collectionDataArray[indexPath.row].0
     
         // Configure the cell
         return cell
     }
-
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "toLargePhoto"{
+            let destinationVC = segue.destination as? PhotoViewController
+            guard let cell = sender as? UICollectionViewCell else { return }
+            if let indexPath = self.collectionView!.indexPath(for: cell) {
+                destinationVC?.img = collectionDataArray[indexPath.row].1
+            }
+        }
+    }
     // MARK: UICollectionViewDelegate
 
     /*
@@ -96,3 +146,18 @@ class MyFriendsPhotoController: UICollectionViewController {
     */
 
 }
+extension MyFriendsPhotoController: UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let cellsAcross: CGFloat = 3
+        var widthRemainingForCellContent = collectionView.bounds.width
+        if let flowLayout = collectionViewLayout as? UICollectionViewFlowLayout {
+            let borderSize: CGFloat = flowLayout.sectionInset.left + flowLayout.sectionInset.right
+            widthRemainingForCellContent -= borderSize + ((cellsAcross - 1) * flowLayout.minimumInteritemSpacing)
+        }
+        let cellWidth = widthRemainingForCellContent / cellsAcross
+        return CGSize(width: cellWidth, height: cellWidth)
+    }
+    
+}
+
