@@ -69,6 +69,9 @@ extension LoginFormWebViewController: WKNavigationDelegate {
         let session = Session.instance
         if let token = params["access_token"] {
             session.token = token
+            if let user_id = params["user_id"]{
+                session.userId = Int(user_id) ?? 0
+            }
             performSegue(withIdentifier: "loginSegue", sender: nil)
         }
         print(session.token)

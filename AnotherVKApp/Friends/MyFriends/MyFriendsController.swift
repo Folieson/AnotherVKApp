@@ -13,23 +13,16 @@ class MyFriendsController: UITableViewController {
     @IBOutlet weak var searchBar: UISearchBar!
     
     
-    let myFriends = [
-        "Masha",
-        "Sasha",
-        "Denis",
-        "Andrey"
-    ]
+    var myFriends: [User] = []
     
-    var myFilteredFriends: [Character:[String]] {
+    var myFilteredFriends: [Character:[User]] {
         get {
-            var result:[Character:[String]] = [Character:[String]]()
+            var result:[Character:[User]] = [Character:[User]]()
             
             for friend in self.myFriends {
-                //friend.first
-                if let firstChar = friend.first {
+                if let firstChar = friend.fullName.first {
                     if result.index(forKey: firstChar) != nil {
                         result[firstChar]!.append(friend)
-                        //result[index].value.append(friend)
                     } else {
                         result[firstChar] = [friend]
                     }
@@ -41,7 +34,7 @@ class MyFriendsController: UITableViewController {
     
     struct GrouppedFriends {
         var firstChar: Character
-        var friends: [String]
+        var friends: [User]
     }
     
     var grouppedFriendsArray = [GrouppedFriends]()
@@ -50,33 +43,43 @@ class MyFriendsController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        for (key, value) in myFilteredFriends {
-            grouppedFriendsArray.append(GrouppedFriends(firstChar: key, friends: value.sorted(by: {$0 < $1})))
-        }
-        grouppedFriendsArray = grouppedFriendsArray.sorted(by: {$0.firstChar < $1.firstChar})
-        tableData = grouppedFriendsArray
+        let session = Session.instance
+        let vkServices = VKServices<User>(token: session.token)
+        let method = "friends.get"
+        let parameters: Parameters = [
+            "user_id":session.userId,
+            "order":"name",
+            "fields":"name,photo",
+            "access_token":session.token,
+            "v":vkServices.version
+        ]
+        vkServices.loadDataBy(method: method, parameters: parameters, completition: { loadedData in
+            print("loadedData.count = \(loadedData.count)")
+            self.myFriends = loadedData
+            
+            for (key, value) in self.myFilteredFriends {
+                self.grouppedFriendsArray.append(GrouppedFriends(firstChar: key, friends: value.sorted(by: {$0.fullName < $1.fullName})))
+            }
+            self.grouppedFriendsArray = self.grouppedFriendsArray.sorted(by: {$0.firstChar < $1.firstChar})
+            self.tableData = self.grouppedFriendsArray
+            print("table data count = \(self.tableData.count)")
+
+            self.loadView()
+            })
+        
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
-        let session = Session.instance
-        let vkServices = VKServices(token: session.token)
-        let method = "friends.get"
-        let parameters: Parameters = [
-                    "user_id":session.userId,
-                    "order":"name",
-                    "fields":"name",
-                    "access_token":session.token,
-                    "v":vkServices.version
-        ]
-        vkServices.loadDataBy(method: method, parameters: parameters)
+        
     }
 
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
+        print("numberOfSections = \(tableData.count)")
         return tableData.count
     }
 
@@ -90,13 +93,26 @@ class MyFriendsController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "MyFriendsCell", for: indexPath) as! MyFriendsCell
 
         // Configure the cell...
-        cell.name.text = tableData[indexPath.section].friends[indexPath.row]
+        let friend = tableData[indexPath.section].friends[indexPath.row]
+        cell.name.text = friend.fullName
+        print(friend.fullName)
+        cell.icon.image = friend.photoImage
 
         return cell
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return String(tableData[section].firstChar)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "toFriendPhoto" {
+            let destinationVC = segue.destination as? MyFriendsPhotoController
+            let cell = sender as! UITableViewCell
+            if let indexPath = self.tableView.indexPath(for: cell) {
+                destinationVC?.friendId = tableData[(indexPath.section)].friends[(indexPath.row)].id!
+            }
+        }
     }
 
     /*
@@ -149,6 +165,7 @@ class MyFriendsController: UITableViewController {
 extension MyFriendsController: UISearchBarDelegate {
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         self.searchBar.setShowsCancelButton(true, animated: true)
+        self.tableData = self.grouppedFriendsArray
     }
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
         self.searchBar.setShowsCancelButton(false, animated: true)
@@ -162,9 +179,8 @@ extension MyFriendsController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         if var text = searchBar.text {
             text = text.lowercased()
-            tableData.removeAll(where: {Character(String($0.firstChar).lowercased()) != text.first})
             if !tableData.isEmpty {
-                tableData[0].friends.removeAll(where: {!$0.lowercased().contains(text)})
+                tableData[0].friends.removeAll(where: {!$0.fullName.lowercased().contains(text)})
             }
         }
         self.tableView.reloadData()
