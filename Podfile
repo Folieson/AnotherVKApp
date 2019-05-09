@@ -11,5 +11,6 @@ target 'AnotherVKApp' do
   # Pods for AnotherVKApp
   pod 'Alamofire'
   pod 'AlamofireObjectMapper', '~> 5.2'
+  pod 'KeychainAccess'
 
 end
