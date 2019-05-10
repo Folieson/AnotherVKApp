@@ -12,7 +12,6 @@ import KeychainAccess
 
 class LoginFormController: UIViewController {
     @IBOutlet weak var helloLabel: UILabel!
-    //let segue = UIStoryboardSegue(identifier: "toTBController", source: self(), destination: <#T##UIViewController#>)
     let keychain = Keychain(service: "new.AnotherVKApp")
     let session = Session.instance
     
@@ -37,7 +36,6 @@ class LoginFormController: UIViewController {
                 print("userId = \(userId)")
                 session.token = token
                 session.userId = userId
-                print("get token from keychain")
             }
             sleep(2)
             self.performSegue(withIdentifier: "toTBController", sender: nil)
@@ -48,18 +46,6 @@ class LoginFormController: UIViewController {
         
     }
     
-//    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
-//        let checkResult = checkUserData()
-//
-//        if !checkResult {
-//            showLoginError()
-//        }
-////        let session = Session.instance
-////        session.token = "someToken"
-////        session.userId = 12345
-//        return checkResult
-//    }
-
     /*
     // MARK: - Navigation
 

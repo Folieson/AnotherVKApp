@@ -31,17 +31,6 @@ class LoginFormWebViewController: UIViewController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        if let token = try? keychain.getString("token") {
-//            print("2")
-//            if let userId = try? keychain.getString("userId") {
-//                print("3")
-//                session.token = token
-//                session.userId = userId
-//                print("get token from keychain")
-//
-//            }
-//            performSegue(withIdentifier: "loginSegue", sender: nil)
-//        } else {
         var urlComponents = URLComponents()
         urlComponents.scheme = "https"
         urlComponents.host = "oauth.vk.com"
@@ -83,9 +72,6 @@ extension LoginFormWebViewController: WKNavigationDelegate {
                 return dict
         }
         
-        //let keychain = Keychain()
-        
-        
         if let token = params["access_token"] {
             do {
                 try keychain.set(token, key: "token")
@@ -118,9 +104,6 @@ extension LoginFormWebViewController: WKNavigationDelegate {
             }
             performSegue(withIdentifier: "loginSegue", sender: nil)
         }
-        //print(session.token)
-        
-        
         decisionHandler(.cancel)
     }
 }

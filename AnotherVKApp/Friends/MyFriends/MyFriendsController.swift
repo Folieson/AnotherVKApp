@@ -54,17 +54,6 @@ class MyFriendsController: UITableViewController {
             self.tableData = self.grouppedFriendsArray
             self.tableView.reloadData()
         }
-//        let vkServices = VKServices<User>()
-//        vkServices.loadUser { users in
-//            print("getting username")
-//            if let user = users.first {
-//                print("username = \(user.fullName)")
-//                let userDefaults = UserDefaults.standard
-//                let session = Session.instance
-//                userDefaults.set(user.fullName, forKey: "userName")
-//                session.userName = user.fullName
-//            }
-//        }
     
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false

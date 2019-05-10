@@ -36,7 +36,7 @@ class User: Mappable {
             if let downloadedImage = image {
                 self.photoImage = downloadedImage
             } else {
-                print(error as Any)
+                print(error.debugDescription)
             }
         })
         

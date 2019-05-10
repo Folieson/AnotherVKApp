@@ -10,8 +10,10 @@ import UIKit
 import Alamofire
 import AlamofireObjectMapper
 import ObjectMapper
+import Kingfisher
 
-let imageCache = NSCache<NSString, UIImage>()
+let imageCache = ImageCache.default
+let downloader = ImageDownloader.default
 
 final class VKServices<T:Mappable> {
     
@@ -118,39 +120,28 @@ final class VKServices<T:Mappable> {
     }
     
     
-    //Необходима оптимизация загрузки изображений
-//    public static func getImageFrom(urlAddress:String?) -> UIImage?{
-//        var result: UIImage? = UIImage(named: "camera_200.png")
-//        if let photoStringUnwrapped = urlAddress {
-//            if let url = URL(string: photoStringUnwrapped) {
-//                do {
-//                    try result = UIImage(data: Data(contentsOf: url))
-//                } catch {
-//                    print(error)
-//                }
-//            }
-//        }
-//        return result
-//    }
-    
-    //не всегда подгружаются изображения, необходимо найти ошибку
     public static func downloadImageFrom(urlAddress: String?, completion: @escaping (_ image: UIImage?, _ error: Error? ) -> Void) {
         if let unwrappedString = urlAddress {
             if let url = URL(string: unwrappedString) {
-                if let cachedImage = imageCache.object(forKey: url.absoluteString as NSString) {
-                    completion(cachedImage, nil)
-                } else {
-                    Alamofire.download(url).responseData(completionHandler: {response in
-                        if let data = response.result.value {
-                            if let newImage = UIImage(data: data) {
-                                imageCache.setObject(newImage, forKey: url.absoluteString as NSString)
-                                completion(newImage,nil)
-                            }
+                imageCache.retrieveImage(forKey: url.absoluteString) { result in
+                    switch result {
+                    case .success(let value):
+                        if let image = value.image {
+                            completion(image, nil)
                         } else {
-                            completion(nil,response.error)
+                            fallthrough
                         }
-                        
-                    })
+                    case .failure:
+                        downloader.downloadImage(with: url) { downloadResult in
+                            switch downloadResult {
+                            case .success(let value):
+                                imageCache.store(value.image, forKey: url.absoluteString)
+                                completion(value.image,nil)
+                            case .failure(let downloadError):
+                                completion(nil,downloadError)
+                            }
+                        }
+                    }
                 }
             }
         }
