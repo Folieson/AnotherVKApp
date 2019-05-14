@@ -8,13 +8,15 @@
 
 import UIKit
 import WebKit
+import KeychainAccess
 
 class Session {
     static let instance = Session()
     private init(){}
     
     var token = ""
-    var userId = 0
+    var userId = "0"
+    var userName = ""
 }
 
 class LoginFormWebViewController: UIViewController{
@@ -23,6 +25,9 @@ class LoginFormWebViewController: UIViewController{
             webView.navigationDelegate = self
         }
     }
+    
+    let keychain = Keychain(service: "new.AnotherVKApp")
+    let session = Session.instance
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,10 +43,12 @@ class LoginFormWebViewController: UIViewController{
             URLQueryItem(name: "response_type", value: "token"),
             URLQueryItem(name: "v", value: "5.95")
         ]
-        
+            
         let request = URLRequest(url: urlComponents.url!)
-        
         webView.load(request)
+        
+        
+        
         // Do any additional setup after loading the view.
     }
 }
@@ -65,18 +72,38 @@ extension LoginFormWebViewController: WKNavigationDelegate {
                 return dict
         }
         
-        
-        let session = Session.instance
         if let token = params["access_token"] {
-            session.token = token
+            do {
+                try keychain.set(token, key: "token")
+                print("token setted")
+            }
+            catch let error {
+                print(error)
+            }
+            self.session.token = token
             if let user_id = params["user_id"]{
-                session.userId = Int(user_id) ?? 0
+                do {
+                    try keychain.set(user_id, key: "userId")
+                    print("userId setted")
+                }
+                catch let error {
+                    print(error)
+                }
+                self.session.userId = user_id
+            }
+            let vkServices = VKServices<User>()
+            vkServices.loadUser { users in
+                print("getting username")
+                if let user = users.first {
+                    print("username = \(user.fullName)")
+                    let userDefaults = UserDefaults.standard
+                    let session = Session.instance
+                    userDefaults.set(user.fullName, forKey: "userName")
+                    session.userName = user.fullName
+                }
             }
             performSegue(withIdentifier: "loginSegue", sender: nil)
         }
-        print(session.token)
-        
-        
         decisionHandler(.cancel)
     }
 }

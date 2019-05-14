@@ -14,34 +14,12 @@ class AllGroupsController: UITableViewController {
     
     //сделать сортировку + поиск
     var tableData: [Group] = []
+    let vkServices = VKServices<Group>()
 
 
     override func viewDidLoad() {
         super.viewDidLoad()
-//        let session = Session.instance
-//        let vkServices = VKServices<Group>(token: session.token)
-//        let method = "groups.search"
-//        let parameters: Parameters = [
-//            "q":searchQuery,
-//            "sort":"0",
-//            "count":"20",
-//            "access_token":session.token,
-//            "v":vkServices.version
-//        ]
-//        vkServices.loadDataBy(method: method, parameters: parameters, completition: { loadedData in
-//            print("loadedData.count = \(loadedData.count)")
-//            self.tableData = loadedData
-////            self.myGroups = loadedData
-////
-////            for (key, value) in self.myFilteredGroups {
-////                self.grouppedGroupsArray.append(GrouppedGroups(firstChar: key, groups: value.sorted(by: {$0.name! < $1.name!})))
-////            }
-////            self.grouppedGroupsArray = self.grouppedGroupsArray.sorted(by: {$0.firstChar < $1.firstChar})
-////            self.tableData = self.grouppedGroupsArray
-////            print("table data count = \(self.tableData.count)")
-//            
-//            self.loadView()
-//        })
+        
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
@@ -136,30 +114,10 @@ extension AllGroupsController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         if var searchQuery = searchBar.text {
             searchQuery = searchQuery.lowercased()
-            let session = Session.instance
-            let vkServices = VKServices<Group>(token: session.token)
-            let method = "groups.search"
-            let parameters: Parameters = [
-                "q":searchQuery,
-                "sort":"0",
-                "count":"20",
-                "access_token":session.token,
-                "v":vkServices.version
-            ]
-            vkServices.loadDataBy(method: method, parameters: parameters, completition: { loadedData in
-                print("loadedData.count = \(loadedData.count)")
-                self.tableData = loadedData
-                //            self.myGroups = loadedData
-                //
-                //            for (key, value) in self.myFilteredGroups {
-                //                self.grouppedGroupsArray.append(GrouppedGroups(firstChar: key, groups: value.sorted(by: {$0.name! < $1.name!})))
-                //            }
-                //            self.grouppedGroupsArray = self.grouppedGroupsArray.sorted(by: {$0.firstChar < $1.firstChar})
-                //            self.tableData = self.grouppedGroupsArray
-                //            print("table data count = \(self.tableData.count)")
+            vkServices.loadGroupsBy(searchQuery: searchQuery) { groups in
+                self.tableData = groups
                 self.tableView.reloadData()
-                //self.loadView()
-            })
+            }
         }
         
         

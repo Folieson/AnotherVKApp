@@ -12,6 +12,7 @@ import Alamofire
 class MyFriendsPhotoController: UICollectionViewController {
     var friendId = 0
     var photos: [Photo] = []
+    let vkServices = VKServices<Photo>()
     var collectionData:[Int:(UIImage?,UIImage?)] = [Int:(UIImage?,UIImage?)]()
     var collectionDataArray: [(UIImage?,UIImage?)] = [(UIImage?,UIImage?)]()
     let middleSizePhotoTypes = ["m", "o", "p", "q"]
@@ -20,20 +21,9 @@ class MyFriendsPhotoController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let session = Session.instance
-        let vkServices = VKServices<Photo>(token: session.token)
-        let method = "photos.get"
-        let parameters: Parameters = [
-            "owner_id":friendId,
-            "album_id":"profile",
-            "photo_sizes":"1",
-            "access_token":session.token,
-            "v":vkServices.version
-        ]
-        vkServices.loadDataBy(method: method, parameters: parameters, completition: { loadedData in
-            print("loadedData.count = \(loadedData.count)")
-            self.photos = loadedData
-            initLoop: for photo in loadedData {
+        vkServices.loadPhotos(String(friendId)) { loadedPhotos in
+            self.photos = loadedPhotos
+            initLoop: for photo in self.photos {
                 if let photoId = photo.id {
                     self.collectionData[photoId] = (nil,nil)
                     if let photoSizes = photo.sizes {
@@ -60,9 +50,8 @@ class MyFriendsPhotoController: UICollectionViewController {
             for (_,value) in self.collectionData{
                 self.collectionDataArray.append((value.0,value.1))
             }
-            
-            self.loadView()
-        })
+            self.collectionView.reloadData()
+        }
 
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false

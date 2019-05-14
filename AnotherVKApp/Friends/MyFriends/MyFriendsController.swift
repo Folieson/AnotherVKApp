@@ -14,6 +14,7 @@ class MyFriendsController: UITableViewController {
     
     
     var myFriends: [User] = []
+    let vkServices = VKServices<User>()
     
     var myFilteredFriends: [Character:[User]] {
         get {
@@ -43,30 +44,17 @@ class MyFriendsController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let session = Session.instance
-        let vkServices = VKServices<User>(token: session.token)
-        let method = "friends.get"
-        let parameters: Parameters = [
-            "user_id":session.userId,
-            "order":"name",
-            "fields":"name,photo",
-            "access_token":session.token,
-            "v":vkServices.version
-        ]
-        vkServices.loadDataBy(method: method, parameters: parameters, completition: { loadedData in
-            print("loadedData.count = \(loadedData.count)")
-            self.myFriends = loadedData
+        vkServices.loadFriends { friends in
+            self.myFriends = friends
             
             for (key, value) in self.myFilteredFriends {
                 self.grouppedFriendsArray.append(GrouppedFriends(firstChar: key, friends: value.sorted(by: {$0.fullName < $1.fullName})))
             }
             self.grouppedFriendsArray = self.grouppedFriendsArray.sorted(by: {$0.firstChar < $1.firstChar})
             self.tableData = self.grouppedFriendsArray
-            print("table data count = \(self.tableData.count)")
-
-            self.loadView()
-            })
-        
+            self.tableView.reloadData()
+        }
+    
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 

@@ -13,6 +13,7 @@ class MyGroupsController: UITableViewController {
     @IBOutlet weak var searchBar: UISearchBar!
 
     var myGroups: [Group] = []
+    let vkServices = VKServices<Group>()
 
     var myFilteredGroups: [Character:[Group]] {
         get {
@@ -42,29 +43,15 @@ class MyGroupsController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let session = Session.instance
-        let vkServices = VKServices<Group>(token: session.token)
-        let method = "groups.get"
-        let parameters: Parameters = [
-                    "user_id":session.userId,
-                    "extended":"1",
-                    "fields":"name,photo",
-                    "access_token":session.token,
-                    "v":vkServices.version
-                ]
-        vkServices.loadDataBy(method: method, parameters: parameters, completition: { loadedData in
-            print("loadedData.count = \(loadedData.count)")
-            self.myGroups = loadedData
-            
+        vkServices.loadUserGroups { groups in
+            self.myGroups = groups
             for (key, value) in self.myFilteredGroups {
                 self.grouppedGroupsArray.append(GrouppedGroups(firstChar: key, groups: value.sorted(by: {$0.name! < $1.name!})))
             }
             self.grouppedGroupsArray = self.grouppedGroupsArray.sorted(by: {$0.firstChar < $1.firstChar})
             self.tableData = self.grouppedGroupsArray
-            print("table data count = \(self.tableData.count)")
-            
-            self.loadView()
-        })
+            self.tableView.reloadData()
+        }
         
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
