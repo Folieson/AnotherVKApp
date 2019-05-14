@@ -37,11 +37,9 @@ class LoginFormController: UIViewController {
                 session.token = token
                 session.userId = userId
             }
-            sleep(2)
-            self.performSegue(withIdentifier: "toTBController", sender: nil)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {self.performSegue(withIdentifier: "toTBController", sender: nil)})
         } else {
-            sleep(2)
-            self.performSegue(withIdentifier: "toWVController", sender: nil)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {self.performSegue(withIdentifier: "toWVController", sender: nil)})
         }
         
     }
