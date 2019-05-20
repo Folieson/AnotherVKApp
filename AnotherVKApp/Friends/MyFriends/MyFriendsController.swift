@@ -8,14 +8,16 @@
 
 import UIKit
 import Alamofire
+import RealmSwift
 
 class MyFriendsController: UITableViewController {
     @IBOutlet weak var searchBar: UISearchBar!
     
-    
+    //private let refreshControl = UIRefreshControl()
     var myFriends: [User] = []
     let vkServices = VKServices<User>()
-    
+    let userDefaults = UserDefaults.standard
+    //var isFirstOpening: Bool = true
     var myFilteredFriends: [Character:[User]] {
         get {
             var result:[Character:[User]] = [Character:[User]]()
@@ -44,16 +46,34 @@ class MyFriendsController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        vkServices.loadFriends { friends in
-            self.myFriends = friends
-            
-            for (key, value) in self.myFilteredFriends {
-                self.grouppedFriendsArray.append(GrouppedFriends(firstChar: key, friends: value.sorted(by: {$0.fullName < $1.fullName})))
+        if userDefaults.bool(forKey: "notFirstOpening") {
+            userDefaults.set(true, forKey: "notFirstOpening")
+            updateFriendsList()
+        } else {
+            do {
+                let realm = try Realm()
+                self.myFriends = Array(realm.objects(User.self))
+                updateFriendsList()
+            } catch {
+                print(error)
             }
-            self.grouppedFriendsArray = self.grouppedFriendsArray.sorted(by: {$0.firstChar < $1.firstChar})
-            self.tableData = self.grouppedFriendsArray
-            self.tableView.reloadData()
+
         }
+        
+        self.refreshControl?.addTarget(self, action: #selector(refreshFriendsData(_:)), for: .valueChanged)
+        //self.refreshControl = refreshControl
+        
+
+//        vkServices.loadFriends { friends in
+//            self.myFriends = friends
+//
+//            for (key, value) in self.myFilteredFriends {
+//                self.grouppedFriendsArray.append(GrouppedFriends(firstChar: key, friends: value.sorted(by: {$0.fullName < $1.fullName})))
+//            }
+//            self.grouppedFriendsArray = self.grouppedFriendsArray.sorted(by: {$0.firstChar < $1.firstChar})
+//            self.tableData = self.grouppedFriendsArray
+//            self.tableView.reloadData()
+//        }
     
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
@@ -84,7 +104,14 @@ class MyFriendsController: UITableViewController {
         let friend = tableData[indexPath.section].friends[indexPath.row]
         cell.name.text = friend.fullName
         print(friend.fullName)
-        cell.icon.image = friend.photoImage
+        VKServices<User>.downloadImageFrom(urlAddress: friend.photo, completion: {image,error in
+            if let downloadedImage = image {
+                cell.icon.image = downloadedImage
+            } else {
+                print(error.debugDescription)
+            }
+        })
+        //cell.icon.image = friend.photoImage
 
         return cell
     }
@@ -98,9 +125,45 @@ class MyFriendsController: UITableViewController {
             let destinationVC = segue.destination as? MyFriendsPhotoController
             let cell = sender as! UITableViewCell
             if let indexPath = self.tableView.indexPath(for: cell) {
-                destinationVC?.friendId = tableData[(indexPath.section)].friends[(indexPath.row)].id!
+                if let friendId = tableData[(indexPath.section)].friends[(indexPath.row)].id.value {
+                    destinationVC?.friendId = friendId
+                }
+                
             }
         }
+    }
+    
+    @objc private func refreshFriendsData(_ sender: Any) {
+        // Fetch Weather Data
+        updateFriendsList()
+    }
+    
+    private func updateFriendsList() {
+        vkServices.loadFriends { friends in
+            self.myFriends = friends
+            do {
+                let realm = try Realm()
+                print(realm.configuration.fileURL)
+                realm.beginWrite()
+                realm.add(friends)
+                try realm.commitWrite()
+            } catch {
+                print(error)
+            }
+            self.sortFriends()
+            //self.updateView()
+            self.refreshControl?.endRefreshing()
+            //self.activit.activityIndicatorView.stopAnimating()
+        }
+    }
+    
+    private func sortFriends(){
+        for (key, value) in self.myFilteredFriends {
+            self.grouppedFriendsArray.append(GrouppedFriends(firstChar: key, friends: value.sorted(by: {$0.fullName < $1.fullName})))
+        }
+        self.grouppedFriendsArray = self.grouppedFriendsArray.sorted(by: {$0.firstChar < $1.firstChar})
+        self.tableData = self.grouppedFriendsArray
+        self.tableView.reloadData()
     }
 
     /*

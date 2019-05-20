@@ -13,5 +13,6 @@ target 'AnotherVKApp' do
   pod 'AlamofireObjectMapper', '~> 5.2'
   pod 'KeychainAccess'
   pod 'Kingfisher'
+  pod 'RealmSwift'
 
 end

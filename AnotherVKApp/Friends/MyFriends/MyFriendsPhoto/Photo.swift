@@ -26,7 +26,7 @@ class Photo: Mappable {
 class PhotoSizes: Mappable {
     var type: String?
     var url: String?
-    var img:UIImage?
+    //var img:UIImage?
     
     required init?(map: Map) {
     }
@@ -34,13 +34,7 @@ class PhotoSizes: Mappable {
     func mapping(map: Map) {
         type <- map["type"]
         url <- map["url"]
-        VKServices<User>.downloadImageFrom(urlAddress: url, completion: {image,error in
-            if let downloadedImage = image {
-                self.img = downloadedImage
-            } else {
-                print(error as Any)
-            }
-        })
+        
     }
     
     
