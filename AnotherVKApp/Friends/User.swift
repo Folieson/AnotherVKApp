@@ -22,7 +22,7 @@ class User: Object, Mappable {
     }
     
     func mapping(map: Map) {
-        id <- map["id"]
+        id.value <- map["id"]
         firstName <- map["first_name"]
         lastName <- map["last_name"]
         photo <- map["photo"]
