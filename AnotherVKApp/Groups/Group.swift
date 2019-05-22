@@ -7,34 +7,40 @@
 //
 
 import ObjectMapper
+import RealmSwift
 
-class Group: Mappable, Hashable {
-    static func == (lhs: Group, rhs: Group) -> Bool {
-        if lhs.id == rhs.id {
-            return true
-            
-        } else {
-            return false
-        }
-    }
-    func hash(into hasher: inout Hasher) {
-        
-    }
+class Group: Object, Mappable {
+//    static func == (lhs: Group, rhs: Group) -> Bool {
+//        if lhs.id == rhs.id {
+//            return true
+//
+//        } else {
+//            return false
+//        }
+//    }
+//
+//    func hash(into hasher: inout Hasher) {
+//
+//    }
 //    var hashValue: Int {
 //        return (unwrapped_id).hashValue
 //    }
     
-    var id: Int?
+    var id = RealmOptional<Int>()
     //var unwrapped_id = 0
-    var name: String?
-    var photo: String?
+    @objc dynamic var name: String? = nil
+    @objc dynamic var photo: String? = nil
     var photoImage = UIImage(named: "camera_200.png")
     
-    required init?(map: Map) {
+    required convenience init?(map: Map) {
+        self.init()
     }
+//    override static func primaryKey() -> String? {
+//        return "id"
+//    }
     
     func mapping(map: Map) {
-        id <- map["id"]
+        id.value <- map["id"]
         name <- map["name"]
         photo <- map["photo_50"]
         
@@ -45,13 +51,7 @@ class Group: Mappable, Hashable {
         //нужно оптимизировать загрузку изображений
         //photoImage = VKServices<Group>.getImageFrom(urlAddress: photo)
         
-        VKServices<Group>.downloadImageFrom(urlAddress: photo, completion: {image,error in
-            if let downloadedImage = image {
-                self.photoImage = downloadedImage
-            } else {
-                print(error as Any)
-            }
-        })
+        
     }
     
     
