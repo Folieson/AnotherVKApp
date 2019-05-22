@@ -7,20 +7,22 @@
 //
 
 import ObjectMapper
+import RealmSwift
 
-class User: Mappable {
-    var id: Int?
-    var firstName: String?
-    var lastName: String?
-    var photo: String?
-    var fullName: String = ""
+class User: Object, Mappable {
+    var id = RealmOptional<Int>()
+    @objc dynamic var firstName: String? = nil
+    @objc dynamic var lastName: String? = nil
+    @objc dynamic var photo: String? = nil
+    @objc dynamic var fullName: String = ""
     var photoImage = UIImage(named: "camera_200.png")
     
-    required init?(map: Map) {
+    required convenience init?(map: Map) {
+        self.init()
     }
     
     func mapping(map: Map) {
-        id <- map["id"]
+        id.value <- map["id"]
         firstName <- map["first_name"]
         lastName <- map["last_name"]
         photo <- map["photo"]
@@ -32,13 +34,7 @@ class User: Mappable {
             }
         }
         
-        VKServices<User>.downloadImageFrom(urlAddress: photo, completion: {image,error in
-            if let downloadedImage = image {
-                self.photoImage = downloadedImage
-            } else {
-                print(error.debugDescription)
-            }
-        })
+        
         
     }
     

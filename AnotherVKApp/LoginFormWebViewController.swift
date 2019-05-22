@@ -12,7 +12,9 @@ import KeychainAccess
 
 class Session {
     static let instance = Session()
-    private init(){}
+    private init(){
+        
+    }
     
     var token = ""
     var userId = "0"

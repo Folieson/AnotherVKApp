@@ -10,11 +10,17 @@ import UIKit
 
 class PhotoViewController: UIViewController {
     @IBOutlet weak var largePhoto: UIImageView!
-    var img: UIImage?
+    var url: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        largePhoto?.image = img
+        VKServices<User>.downloadImageFrom(urlAddress: url, completion: {image,error in
+            if let downloadedImage = image {
+                self.largePhoto.image = downloadedImage
+            } else {
+                print(error.debugDescription)
+            }
+        })
 
         // Do any additional setup after loading the view.
     }

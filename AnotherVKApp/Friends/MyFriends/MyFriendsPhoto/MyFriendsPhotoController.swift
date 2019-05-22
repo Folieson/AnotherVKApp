@@ -13,8 +13,8 @@ class MyFriendsPhotoController: UICollectionViewController {
     var friendId = 0
     var photos: [Photo] = []
     let vkServices = VKServices<Photo>()
-    var collectionData:[Int:(UIImage?,UIImage?)] = [Int:(UIImage?,UIImage?)]()
-    var collectionDataArray: [(UIImage?,UIImage?)] = [(UIImage?,UIImage?)]()
+    var collectionData:[Int:(String?,String?)] = [Int:(String?,String?)]()
+    var collectionDataArray: [(String?,String?)] = [(String?,String?)]()
     let middleSizePhotoTypes = ["m", "o", "p", "q"]
     let largeSizePhotoTypes = ["x","y","z", "w", "r"]
     
@@ -28,12 +28,12 @@ class MyFriendsPhotoController: UICollectionViewController {
                     self.collectionData[photoId] = (nil,nil)
                     if let photoSizes = photo.sizes {
                         sizesLoop: for photoSize in photoSizes {
-                            if let img = photoSize.img {
+                            if let urlString = photoSize.url {
                                 if let photoType = photoSize.type {
                                     if self.middleSizePhotoTypes.contains(photoType) {
-                                        self.collectionData[photoId]?.0 = img
+                                        self.collectionData[photoId]?.0 = urlString
                                     } else if self.largeSizePhotoTypes.contains(photoType) {
-                                        self.collectionData[photoId]?.1 = img
+                                        self.collectionData[photoId]?.1 = urlString
                                     }
                                     if (self.collectionData[photoId]?.0 != nil) && (self.collectionData[photoId]?.1 != nil) {
                                         continue initLoop
@@ -88,7 +88,14 @@ class MyFriendsPhotoController: UICollectionViewController {
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MyFriendsPhotoCell", for: indexPath) as! MyFriendsPhotoCell
         
-        cell.photo.image = collectionDataArray[indexPath.row].0
+        VKServices<User>.downloadImageFrom(urlAddress: collectionDataArray[indexPath.row].0, completion: {image,error in
+            if let downloadedImage = image {
+                cell.photo.image = downloadedImage
+            } else {
+                print(error.debugDescription)
+            }
+        })
+        
     
         // Configure the cell
         return cell
@@ -99,7 +106,7 @@ class MyFriendsPhotoController: UICollectionViewController {
             let destinationVC = segue.destination as? PhotoViewController
             guard let cell = sender as? UICollectionViewCell else { return }
             if let indexPath = self.collectionView!.indexPath(for: cell) {
-                destinationVC?.img = collectionDataArray[indexPath.row].1
+                destinationVC?.url = collectionDataArray[indexPath.row].1
             }
         }
     }
