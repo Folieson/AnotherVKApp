@@ -20,6 +20,9 @@ class User: Object, Mappable {
     required convenience init?(map: Map) {
         self.init()
     }
+    override static func primaryKey() -> String? {
+        return "id"
+    }
     
     func mapping(map: Map) {
         id.value <- map["id"]

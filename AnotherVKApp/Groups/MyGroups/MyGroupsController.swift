@@ -8,6 +8,7 @@
 
 import UIKit
 import Alamofire
+import RealmSwift
 
 class MyGroupsController: UITableViewController {
     @IBOutlet weak var searchBar: UISearchBar!
@@ -43,14 +44,12 @@ class MyGroupsController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        vkServices.loadUserGroups { groups in
-            self.myGroups = groups
-            for (key, value) in self.myFilteredGroups {
-                self.grouppedGroupsArray.append(GrouppedGroups(firstChar: key, groups: value.sorted(by: {$0.name! < $1.name!})))
-            }
-            self.grouppedGroupsArray = self.grouppedGroupsArray.sorted(by: {$0.firstChar < $1.firstChar})
-            self.tableData = self.grouppedGroupsArray
-            self.tableView.reloadData()
+        do {
+            let realm = try Realm()
+            self.myGroups = Array(realm.objects(Group.self))
+            updateMyGroups()
+        } catch {
+            print(error)
         }
         
         // Uncomment the following line to preserve selection between presentations
@@ -78,10 +77,41 @@ class MyGroupsController: UITableViewController {
 
         // Configure the cell...
         let group = tableData[indexPath.section].groups[indexPath.row]
+        VKServices<Group>.downloadImageFrom(urlAddress: group.photo, completion: {image,error in
+            if let downloadedImage = image {
+                cell.icon.image = downloadedImage
+            } else {
+                print(error as Any)
+            }
+        })
         cell.name.text = group.name
-        cell.icon.image = group.photoImage
 
         return cell
+    }
+    
+    func updateMyGroups() {
+        vkServices.loadUserGroups { groups in
+            self.myGroups = groups
+            do {
+                let realm = try Realm()
+                print(realm.configuration.fileURL)
+                realm.beginWrite()
+                realm.add(groups)
+                try realm.commitWrite()
+            } catch {
+                print(error)
+            }
+            self.sortGroups()
+        }
+    }
+    
+    func sortGroups() {
+        for (key, value) in self.myFilteredGroups {
+            self.grouppedGroupsArray.append(GrouppedGroups(firstChar: key, groups: value.sorted(by: {$0.name! < $1.name!})))
+        }
+        self.grouppedGroupsArray = self.grouppedGroupsArray.sorted(by: {$0.firstChar < $1.firstChar})
+        self.tableData = self.grouppedGroupsArray
+        self.tableView.reloadData()
     }
     
     @IBAction func addGroup(segue: UIStoryboardSegue) {

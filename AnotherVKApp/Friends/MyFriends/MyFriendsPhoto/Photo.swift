@@ -7,28 +7,40 @@
 //
 
 import ObjectMapper
+import RealmSwift
 
-class Photo: Mappable {
-    var id: Int?
-    var sizes: [PhotoSizes]?
+class Photo: Object, Mappable {
+    var id = RealmOptional<Int>()
+    let sizes = List<PhotoSizes>()
     
-    required init?(map: Map) {
+    required convenience init?(map: Map) {
+        self.init()
     }
+//    override static func primaryKey() -> String? {
+//        return "id"
+//    }
     
     func mapping(map: Map) {
-        id <- map["id"]
-        sizes <- map["sizes"]
+        var sizesArray:[PhotoSizes]?
+        id.value <- map["id"]
+        sizesArray <- map["sizes"]
+        if let sizesUnwrappedArray = sizesArray {
+            for size in sizesUnwrappedArray {
+                sizes.append(size)
+            }
+        }
     }
     
     
 }
 
-class PhotoSizes: Mappable {
-    var type: String?
-    var url: String?
+class PhotoSizes: Object, Mappable {
+    @objc dynamic var type: String? = nil
+    @objc dynamic var url: String? = nil
     //var img:UIImage?
     
-    required init?(map: Map) {
+    required convenience init?(map: Map) {
+        self.init()
     }
     
     func mapping(map: Map) {

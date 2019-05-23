@@ -14,10 +14,14 @@ class MyFriendsController: UITableViewController {
     @IBOutlet weak var searchBar: UISearchBar!
     
     //private let refreshControl = UIRefreshControl()
+    var notificationToken: NotificationToken? = nil
+    
     var myFriends: [User] = []
+    
+    var friends: Results<User>?
+
     let vkServices = VKServices<User>()
-    let userDefaults = UserDefaults.standard
-    //var isFirstOpening: Bool = true
+
     var myFilteredFriends: [Character:[User]] {
         get {
             var result:[Character:[User]] = [Character:[User]]()
@@ -43,24 +47,36 @@ class MyFriendsController: UITableViewController {
     var grouppedFriendsArray = [GrouppedFriends]()
     
     var tableData = [GrouppedFriends]()
-    
+    override func viewWillAppear(_ animated: Bool) {
+        updateFriendsList()
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
-        if userDefaults.bool(forKey: "notFirstOpening") {
-            userDefaults.set(true, forKey: "notFirstOpening")
-            updateFriendsList()
-        } else {
-            do {
-                let realm = try Realm()
-                self.myFriends = Array(realm.objects(User.self))
-                updateFriendsList()
-            } catch {
-                print(error)
+        do {
+            let realm = try Realm()
+            self.friends = realm.objects(User.self)
+            notificationToken = self.friends?.observe {[weak self] changes in
+                switch changes {
+                case .initial:
+                    print("initial")
+                    guard let unwrappedFriends = self?.friends else {break}
+                    self?.myFriends = Array(unwrappedFriends)
+                    self?.sortFriends()
+                case .update:
+                    print("update")
+                    guard let unwrappedFriends = self?.friends else {break}
+                    self?.myFriends = Array(unwrappedFriends)
+                    self?.sortFriends()
+                case .error(let error):
+                    print(error)
+                }
+                
             }
-
+        } catch {
+            print(error)
         }
         
-        self.refreshControl?.addTarget(self, action: #selector(refreshFriendsData(_:)), for: .valueChanged)
+        updateFriendsList()
         //self.refreshControl = refreshControl
         
 
@@ -81,6 +97,9 @@ class MyFriendsController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
         
+    }
+    deinit {
+        notificationToken?.invalidate()
     }
 
     // MARK: - Table view data source
@@ -133,27 +152,24 @@ class MyFriendsController: UITableViewController {
         }
     }
     
-    @objc private func refreshFriendsData(_ sender: Any) {
-        // Fetch Weather Data
-        updateFriendsList()
-    }
+//    @objc private func refreshFriendsData(_ sender: Any) {
+//        // Fetch Weather Data
+//        updateFriendsList()
+//    }
     
     private func updateFriendsList() {
         vkServices.loadFriends { friends in
-            self.myFriends = friends
+            //self.myFriends = friends
             do {
                 let realm = try Realm()
                 print(realm.configuration.fileURL)
                 realm.beginWrite()
-                realm.add(friends)
+                realm.add(friends, update: true)
                 try realm.commitWrite()
             } catch {
                 print(error)
             }
-            self.sortFriends()
-            //self.updateView()
-            self.refreshControl?.endRefreshing()
-            //self.activit.activityIndicatorView.stopAnimating()
+            //self.sortFriends()
         }
     }
     
@@ -163,6 +179,7 @@ class MyFriendsController: UITableViewController {
         }
         self.grouppedFriendsArray = self.grouppedFriendsArray.sorted(by: {$0.firstChar < $1.firstChar})
         self.tableData = self.grouppedFriendsArray
+        self.grouppedFriendsArray.removeAll()
         self.tableView.reloadData()
     }
 

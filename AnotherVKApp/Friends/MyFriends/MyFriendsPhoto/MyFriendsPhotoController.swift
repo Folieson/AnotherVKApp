@@ -8,6 +8,7 @@
 
 import UIKit
 import Alamofire
+import RealmSwift
 
 class MyFriendsPhotoController: UICollectionViewController {
     var friendId = 0
@@ -20,37 +21,13 @@ class MyFriendsPhotoController: UICollectionViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        vkServices.loadPhotos(String(friendId)) { loadedPhotos in
-            self.photos = loadedPhotos
-            initLoop: for photo in self.photos {
-                if let photoId = photo.id {
-                    self.collectionData[photoId] = (nil,nil)
-                    if let photoSizes = photo.sizes {
-                        sizesLoop: for photoSize in photoSizes {
-                            if let urlString = photoSize.url {
-                                if let photoType = photoSize.type {
-                                    if self.middleSizePhotoTypes.contains(photoType) {
-                                        self.collectionData[photoId]?.0 = urlString
-                                    } else if self.largeSizePhotoTypes.contains(photoType) {
-                                        self.collectionData[photoId]?.1 = urlString
-                                    }
-                                    if (self.collectionData[photoId]?.0 != nil) && (self.collectionData[photoId]?.1 != nil) {
-                                        continue initLoop
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                
-                
-            }
-            
-            for (_,value) in self.collectionData{
-                self.collectionDataArray.append((value.0,value.1))
-            }
-            self.collectionView.reloadData()
+        
+        do {
+            let realm = try Realm()
+            self.photos = Array(realm.objects(Photo.self))
+            updateFriendsPhotos()
+        } catch {
+            print(error)
         }
 
         // Uncomment the following line to preserve selection between presentations
@@ -110,6 +87,51 @@ class MyFriendsPhotoController: UICollectionViewController {
             }
         }
     }
+    
+    func updateFriendsPhotos() {
+        vkServices.loadPhotos(String(friendId)) { loadedPhotos in
+            self.photos = loadedPhotos
+            do {
+                let realm = try Realm()
+                print(realm.configuration.fileURL)
+                realm.beginWrite()
+                realm.add(loadedPhotos)
+                try realm.commitWrite()
+            } catch {
+                print(error)
+            }
+            self.prepareFriendsPhotos()
+        }
+    }
+    
+    func prepareFriendsPhotos() {
+        initLoop: for photo in self.photos {
+            if let photoId = photo.id.value {
+                self.collectionData[photoId] = (nil,nil)
+                    sizesLoop: for photoSize in photo.sizes {
+                        if let urlString = photoSize.url {
+                            if let photoType = photoSize.type {
+                                if self.middleSizePhotoTypes.contains(photoType) {
+                                    self.collectionData[photoId]?.0 = urlString
+                                } else if self.largeSizePhotoTypes.contains(photoType) {
+                                    self.collectionData[photoId]?.1 = urlString
+                                }
+                                if (self.collectionData[photoId]?.0 != nil) && (self.collectionData[photoId]?.1 != nil) {
+                                    continue initLoop
+                                }
+                            }
+                        }
+                    }
+            }
+        }
+        
+        for (_,value) in self.collectionData{
+            self.collectionDataArray.append((value.0,value.1))
+        }
+        self.collectionView.reloadData()
+    }
+    
+    
     // MARK: UICollectionViewDelegate
 
     /*
