@@ -59,6 +59,6 @@ fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
 node_modules
-
+GoogleService-Info.plist
 sourcetree-hook.json
 AnotherVKApp.xcodeproj/xcuserdata/andrejponamarcuk.xcuserdatad/xcschemes/xcschememanagement.plist
