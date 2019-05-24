@@ -48,6 +48,13 @@ class AllGroupsController: UITableViewController {
         // Configure the cell...
         let group = tableData[indexPath.row]
         cell.name.text = group.name
+        VKServices<Group>.downloadImageFrom(urlAddress: group.photo, completion: {image,error in
+            if let downloadedImage = image {
+                cell.icon.image = downloadedImage
+            } else {
+                print(error as Any)
+            }
+        })
         cell.icon.image = group.photoImage
 
         return cell
