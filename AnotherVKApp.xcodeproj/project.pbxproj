@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		90B9D19E647DB8DC24EC77EB /* Pods_AnotherVKApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4ADF603DCDC290BC6AAC5069 /* Pods_AnotherVKApp.framework */; };
 		B91A95172277742D0084C970 /* VKServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91A95162277742D0084C970 /* VKServices.swift */; };
+		B95784F92296FF42000CAE58 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B95784F82296FF42000CAE58 /* GoogleService-Info.plist */; };
 		B9606B6D2279A09C00297067 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9606B6C2279A09C00297067 /* User.swift */; };
 		B9606B702279EDC500297067 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9606B6F2279EDC500297067 /* Group.swift */; };
 		B9929700222C2E940028D30A /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99296FF222C2E940028D30A /* GradientView.swift */; };
@@ -40,6 +41,7 @@
 		4ADF603DCDC290BC6AAC5069 /* Pods_AnotherVKApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AnotherVKApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		950606E3215FF241E22AE096 /* Pods-AnotherVKApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AnotherVKApp.debug.xcconfig"; path = "Target Support Files/Pods-AnotherVKApp/Pods-AnotherVKApp.debug.xcconfig"; sourceTree = "<group>"; };
 		B91A95162277742D0084C970 /* VKServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VKServices.swift; sourceTree = "<group>"; };
+		B95784F82296FF42000CAE58 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		B9606B6C2279A09C00297067 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		B9606B6F2279EDC500297067 /* Group.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
 		B99296FF222C2E940028D30A /* GradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
@@ -148,6 +150,7 @@
 				B9AE9E9621FF7ECB0007C48E /* Assets.xcassets */,
 				B9AE9E9821FF7ECB0007C48E /* LaunchScreen.storyboard */,
 				B9AE9E9B21FF7ECB0007C48E /* Info.plist */,
+				B95784F82296FF42000CAE58 /* GoogleService-Info.plist */,
 				B9AE9EA121FF7F230007C48E /* LoginFormController.swift */,
 				B9EE613A22762229004C1801 /* LoginFormWebViewController.swift */,
 			);
@@ -286,6 +289,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B9AE9E9A21FF7ECB0007C48E /* LaunchScreen.storyboard in Resources */,
+				B95784F92296FF42000CAE58 /* GoogleService-Info.plist in Resources */,
 				B9AE9E9721FF7ECB0007C48E /* Assets.xcassets in Resources */,
 				B9AE9E9521FF7ECA0007C48E /* Main.storyboard in Resources */,
 			);
@@ -322,28 +326,11 @@
 			files = (
 			);
 			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AnotherVKApp/Pods-AnotherVKApp-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
-				"${BUILT_PRODUCTS_DIR}/AlamofireObjectMapper/AlamofireObjectMapper.framework",
-				"${BUILT_PRODUCTS_DIR}/KeychainAccess/KeychainAccess.framework",
-				"${BUILT_PRODUCTS_DIR}/Kingfisher/Kingfisher.framework",
-				"${BUILT_PRODUCTS_DIR}/ObjectMapper/ObjectMapper.framework",
-				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
-				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
+				"${PODS_ROOT}/Target Support Files/Pods-AnotherVKApp/Pods-AnotherVKApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-			);
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireObjectMapper.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KeychainAccess.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Kingfisher.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ObjectMapper.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
+				"${PODS_ROOT}/Target Support Files/Pods-AnotherVKApp/Pods-AnotherVKApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
