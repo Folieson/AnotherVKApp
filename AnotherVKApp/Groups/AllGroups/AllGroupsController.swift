@@ -8,6 +8,7 @@
 
 import UIKit
 import Alamofire
+import Firebase
 
 class AllGroupsController: UITableViewController {
     @IBOutlet weak var searchBar: UISearchBar!
@@ -15,10 +16,12 @@ class AllGroupsController: UITableViewController {
     //сделать сортировку + поиск
     var tableData: [Group] = []
     let vkServices = VKServices<Group>()
+    let session = Session.instance
 
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
@@ -45,9 +48,23 @@ class AllGroupsController: UITableViewController {
         // Configure the cell...
         let group = tableData[indexPath.row]
         cell.name.text = group.name
+        VKServices<Group>.downloadImageFrom(urlAddress: group.photo, completion: {image,error in
+            if let downloadedImage = image {
+                cell.icon.image = downloadedImage
+            } else {
+                print(error as Any)
+            }
+        })
         cell.icon.image = group.photoImage
 
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let groupName = tableData[indexPath.row].name else {return}
+        let db = Firestore.firestore()
+        db.collection("users").document(session.userId).updateData([
+            "selectedGroups":FieldValue.arrayUnion([groupName])])
     }
 
     /*

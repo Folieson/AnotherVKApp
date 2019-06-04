@@ -14,5 +14,7 @@ target 'AnotherVKApp' do
   pod 'KeychainAccess'
   pod 'Kingfisher'
   pod 'RealmSwift'
+  pod 'Firebase/Core'
+  pod 'Firebase/Firestore'
 
 end

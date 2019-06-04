@@ -9,6 +9,7 @@
 import UIKit
 import WebKit
 import KeychainAccess
+import FirebaseFirestore
 
 class Session {
     static let instance = Session()
@@ -84,6 +85,7 @@ extension LoginFormWebViewController: WKNavigationDelegate {
             }
             self.session.token = token
             if let user_id = params["user_id"]{
+                
                 do {
                     try keychain.set(user_id, key: "userId")
                     print("userId setted")
@@ -102,6 +104,20 @@ extension LoginFormWebViewController: WKNavigationDelegate {
                     let session = Session.instance
                     userDefaults.set(user.fullName, forKey: "userName")
                     session.userName = user.fullName
+                    
+                    let db = Firestore.firestore()
+                    //var ref: DocumentReference? = nil
+                    db.collection("users").document(session.userId).setData([
+                        "id": session.userId,
+                        "userName": session.userName,
+                        "selectedGroups": []
+                    ]) { err in
+                        if let err = err {
+                            print("Error writing document: \(err)")
+                        } else {
+                            print("Document successfully written!")
+                        }
+                    }
                 }
             }
             performSegue(withIdentifier: "loginSegue", sender: nil)
